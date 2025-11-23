@@ -90,7 +90,7 @@ services:
       - ${CALLS_PORT}:8443/udp
 
   backup_postgres:
-    image: appleboy/docker-backup-database:postgres-13
+    image: appleboy/docker-backup-database:postgres14
     logging:
       options:
         max-size: "100k"
