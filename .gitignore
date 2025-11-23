@@ -4,3 +4,5 @@ certs
 .env
 log/*
 conf/acme.json
+docker-compose.override.yml
+docker-compose.override.yaml
