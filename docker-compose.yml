@@ -89,6 +89,21 @@ services:
     ports:
       - ${CALLS_PORT}:8443/udp
 
+  backup_postgres:
+    image: postgres:14
+    container_name: pg_backup
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      AWS_ACCESS_KEY_ID: ${ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
+      S3_BUCKET: santa-db-backup
+      S3_PREFIX: backup_mattermost
+      AWS_DEFAULT_REGION: ap-southeast-1
+    volumes:
+      - ./backup/backup.sh:/backup.sh
+      - ./backup/logs:/logs
+      - ./backup/data:/data
+    command: ["bash", "-c", "chmod +x /backup.sh && crond -f"]
 
 # If you use rolling image tags and feel lucky watchtower can automatically pull new images and
 # instantiate containers from it. https://containrrr.dev/watchtower/
