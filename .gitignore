@@ -6,3 +6,16 @@ log/*
 conf/acme.json
 docker-compose.override.yml
 docker-compose.override.yaml
+
+# ========================
+# Backup Scripts / Outputs
+# ========================
+backup/data/*
+backup/logs/*
+!backup/backup.sh
+!backup/crontab
+
+# Exclude generated dump files
+*.dump
+*.sql.gz
+*.tar.gz
