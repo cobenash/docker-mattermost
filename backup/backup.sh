@@ -55,12 +55,13 @@ fi
 echo "[$(date)] Successfully uploaded to S3." | tee -a $LOGFILE
 
 ####################################
-# 5. Cleanup Local Backups (older than 7 days)
+# 5. KEEP ONLY THE LATEST BACKUP LOCALLY
 ####################################
-find /data -type f -mtime +7 -exec rm {} \;
+echo "[$(date)] Cleaning old local backups..." | tee -a $LOGFILE
+ls -t /data/*.dump | awk 'NR>1' | xargs -r rm -f
 
 ####################################
-# 6. Cleanup Logs (older than 7 days)
+# 6. Cleanup Logs older than 7 days
 ####################################
 find /logs -type f -name "backup_*.log" -mtime +7 -exec rm {} \;
 
