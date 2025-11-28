@@ -90,7 +90,8 @@ services:
       - ${CALLS_PORT}:8443/udp
 
   backup_postgres:
-    image: postgres:14-alpine
+    build: ./backup
+    restart: always
     container_name: pg_backup
 
     environment:
