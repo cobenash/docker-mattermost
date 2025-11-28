@@ -94,17 +94,29 @@ services:
     container_name: pg_backup
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+
       AWS_ACCESS_KEY_ID: ${ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
       S3_BUCKET: santa-db-backup
       S3_PREFIX: backup_mattermost
       AWS_DEFAULT_REGION: ap-southeast-1
+
+      # 正式排程：每天 0、6、12、18（UTC）跑一次備份
+      CRON_SCHEDULE: "0 0,6,12,18 * * * /bin/sh /backup.sh >> /logs/cron.log 2>&1"
     volumes:
       - ./backup/backup.sh:/backup.sh
-      - ./backup/crontab:/etc/crontabs/root
       - ./backup/logs:/logs
       - ./backup/data:/data
-    command: ["/bin/sh", "-c", "chmod +x /backup.sh && crond -f -c /etc/crontabs"]
+
+    command: >
+      /bin/sh -c "
+        chmod +x /backup.sh &&
+        echo \"$CRON_SCHEDULE\" > /etc/crontabs/root &&
+        crond -f -c /etc/crontabs
+      "
+
 
 
 
