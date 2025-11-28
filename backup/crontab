@@ -1,2 +1,2 @@
 # 每 6 小時跑一次備份
-0 */6 * * * /backup.sh >> /logs/cron.log 2>&1
+0 */6 * * * /bin/sh /backup.sh >> /logs/cron.log 2>&1
