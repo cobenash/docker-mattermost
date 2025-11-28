@@ -92,6 +92,7 @@ services:
   backup_postgres:
     image: postgres:14-alpine
     container_name: pg_backup
+
     environment:
       TZ: Asia/Taipei
       PGPASSWORD: ${POSTGRES_PASSWORD}
@@ -109,12 +110,15 @@ services:
       - ./backup/logs:/logs
       - ./backup/data:/data
 
-    # 直接覆蓋 entrypoint，避免被 postgres 自帶的 docker-entrypoint 影響
-    entrypoint: ["/bin/sh", "-c"]
-    command: |
-      chmod +x /backup.sh
-      echo "0 */6 * * * /bin/sh /backup.sh >> /logs/cron.log 2>&1" > /etc/crontabs/root
-      crond -f -l 8 -c /etc/crontabs
+    # 用 /bin/sh -c 跑一整串指令
+    command:
+      - /bin/sh
+      - -c
+      - |
+        chmod +x /backup.sh && \
+        echo "0 */6 * * * /bin/sh /backup.sh >> /logs/cron.log 2>&1" > /etc/crontabs/root && \
+        crond -f -l 8 -c /etc/crontabs
+
 
 
 
